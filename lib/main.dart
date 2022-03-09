@@ -1,24 +1,19 @@
-import 'package:velocity_x/velocity_x.dart';
-import './screens/settings/settings.dart';
+import 'package:browser/screens/auth/Log_in.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
+  runApp(GetMaterialApp(
       theme: ThemeData(
-          appBarTheme: AppBarTheme(
-        backgroundColor: Vx.red800,
+          iconTheme: IconThemeData(
+        color: Vx.white,
       )),
-      home: Settings(),
-    );
-  }
+      darkTheme: ThemeData(
+          iconTheme: IconThemeData(
+        color: Vx.blue200,
+      )),
+      // themeMode: ThemeMode.light,
+      debugShowCheckedModeBanner: false,
+      home: LogIn()));
 }
