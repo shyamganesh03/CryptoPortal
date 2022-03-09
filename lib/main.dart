@@ -1,3 +1,5 @@
+import 'package:velocity_x/velocity_x.dart';
+import './screens/settings/settings.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/settings/settings.dart';
@@ -14,7 +16,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(),
       home: Settings(),
     );
   }
