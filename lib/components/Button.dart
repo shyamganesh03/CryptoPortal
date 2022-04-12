@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'LabelText.dart';
+import 'package:get/get.dart';
+import '../data/datastores.dart';
 
 class Button extends StatelessWidget {
   const Button({
@@ -30,7 +32,7 @@ class Button extends StatelessWidget {
 }
 
 class IButton extends StatelessWidget {
-  const IButton(
+   IButton(
       {Key? key,
       required this.action,
       required this.icon,
@@ -41,13 +43,24 @@ class IButton extends StatelessWidget {
   final action;
   final icon;
   final enabled;
+  final storeController = Get.put(DataStore());
   @override
   Widget build(BuildContext context) {
     return IconButton(
-        onPressed: () => id == 9 ? action() : action(id),
+        onPressed: () => {
+              if (id == 9)
+                action()
+              else if (id == 10)
+                action('l')
+              else if (id == 11)
+                action('i')
+              else
+                action(id)
+            },
         icon: FaIcon(
           icon,
           size: 20.0,
+          color:storeController.iconcolor.value,
         ));
   }
 }

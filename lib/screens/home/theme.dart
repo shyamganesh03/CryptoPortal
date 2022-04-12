@@ -1,9 +1,12 @@
-import 'package:browser/components/RadioButtons.dart';
+import 'package:browser/components/Button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../../components/Divider.dart';
 import '../../components/LabelText.dart';
+import '../../data/datastores.dart';
 
 class Themes extends StatefulWidget {
   const Themes({Key? key}) : super(key: key);
@@ -13,6 +16,7 @@ class Themes extends StatefulWidget {
 }
 
 class _ThemesState extends State<Themes> {
+  final storeController = Get.put(DataStore());
   String gvalue = 'Light Theme';
   double slidervalue = 20.0;
   List<String> fonts = ['Roboto', 'Open Sans', 'Lato', 'Montserrat'];
@@ -20,92 +24,73 @@ class _ThemesState extends State<Themes> {
   ScrollController cv1 = ScrollController();
   ScrollController cv2 = ScrollController();
   ScrollController ch1 = ScrollController();
+  var tempColor;
+  String type = '';
   radiovalue(value) {
     setState(() {
       gvalue = value.toString();
     });
   }
 
+  void _openDialog(String title, Widget content) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(6.0),
+          title: Text(title),
+          content: content,
+          actions: [
+            TextButton(
+              child: Text('CANCEL'),
+              onPressed: Navigator.of(context).pop,
+            ),
+            TextButton(
+              child: Text('SUBMIT'),
+              onPressed: () {
+                if (type == 'l') {
+                  storeController.updateFontColor(tempColor);
+                } else
+                  storeController.updateIconColor(tempColor);
+                Navigator.of(context).pop();
+                setState(() {});
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _openColorPicker(String typename) async {
+    _openDialog(
+      "Color picker",
+      MaterialColorPicker(
+        selectedColor: storeController.fontcolor.value,
+        onColorChange: (color) =>
+            setState(() => {tempColor = color, type = typename}),
+        onMainColorChange: (color) {},
+        onBack: () => print("Back button pressed"),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return VStack(
       [
-        10.heightBox,
-        LabelText(
-          type: 'Mt',
-          value: 'Appearence',
-          color: Vx.white,
-        ).px(20),
-        10.heightBox,
-        HStack(
-          [
-            60.widthBox,
-            RadioButtons(
-                theme: true,
-                value: 'Light Theme',
-                action: radiovalue,
-                description: 'Light Theme',
-                gvalue: gvalue),
-            100.widthBox,
-            RadioButtons(
-                theme: true,
-                value: 'Dark Theme',
-                action: radiovalue,
-                description: 'Dark Theme',
-                gvalue: gvalue),
-            10.heightBox,
-          ],
-        )
-            .scrollHorizontal(controller: ch1)
-            .box
-            .size(650, 150)
-            .blue200
-            .rounded
-            .makeCentered()
-            .px(200),
-        12.heightBox,
-        Div(),
-        10.heightBox,
-        LabelText(
-          type: 'Mt',
-          value: 'Font Size',
-          color: Vx.white,
-        ).px(20),
-        12.heightBox,
-        SfSlider(
-          min: 0.0,
-          max: 50.0,
-          value: slidervalue,
-          interval: 5,
-          showTicks: true,
-          showLabels: true,
-          enableTooltip: true,
-          minorTicksPerInterval: 1,
-          thumbIcon: Icon(
-            Icons.translate_rounded,
-            size: 12.0,
-            color: Vx.white,
-          ),
-          onChanged: (dynamic value) {
-            setState(() {
-              slidervalue = value;
-            });
-          },
-        ).box.size(500, 90).makeCentered(),
-        15.heightBox,
-        Div(),
-        12.heightBox,
+        80.heightBox,
         HStack(
           [
             LabelText(
               type: 'Mt',
               value: 'Font Family',
-              color: Vx.white,
+              color: storeController.fontcolor.value,
             ).px(20),
             LabelText(
               type: 'Mt',
               value: 'Current Font: ${font}',
-              color: Vx.white,
+              color: storeController.fontcolor.value,
             ).px(20),
           ],
           axisSize: MainAxisSize.max,
@@ -119,15 +104,58 @@ class _ThemesState extends State<Themes> {
                       child: LabelText(
                 type: 'Mt',
                 value: fonts[index],
-                color: Vx.white,
+                color: storeController.fontcolor.value,
               ).centered())
                   .size(300, 100)
                   .make()
                   .onTap(() {
                 font = fonts[index];
+                storeController.updateFontName(fonts[index]);
                 setState(() {});
               });
-            }).box.size(context.screenWidth, 200).make()
+            }).box.size(context.screenWidth, 200).make(),
+        12.heightBox,
+        Div(),
+        12.heightBox,
+        VxBox(
+          child: VStack(
+            [
+              HStack(
+                [
+                  LabelText(
+                      type: 'Mt',
+                      value: 'FontColor:',
+                      color: storeController.fontcolor.value),
+                  IButton(
+                      action: _openColorPicker,
+                      icon: FontAwesomeIcons.a,
+                      id: 10,
+                      enabled: false)
+                ],
+                axisSize: MainAxisSize.max,
+                alignment: MainAxisAlignment.spaceAround,
+              ),
+              HStack(
+                [
+                  LabelText(
+                      type: 'Mt',
+                      value: 'IconColor:',
+                      color: storeController.fontcolor.value),
+                  IButton(
+                      action: _openColorPicker,
+                      icon: FontAwesomeIcons.i,
+                      id: 11,
+                      enabled: false)
+                ],
+                axisSize: MainAxisSize.max,
+                alignment: MainAxisAlignment.spaceAround,
+              ),
+            ],
+            axisSize: MainAxisSize.max,
+            alignment: MainAxisAlignment.center,
+            crossAlignment: CrossAxisAlignment.center,
+          ),
+        ).height(100).width(context.safePercentWidth * 95).make()
       ],
       axisSize: MainAxisSize.max,
       alignment: MainAxisAlignment.start,

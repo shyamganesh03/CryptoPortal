@@ -4,7 +4,10 @@ import 'package:browser/components/LabelText.dart';
 import 'package:browser/components/TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../../data/datastores.dart';
 
 class Bookmark extends StatefulWidget {
   const Bookmark({Key? key}) : super(key: key);
@@ -14,6 +17,8 @@ class Bookmark extends StatefulWidget {
 }
 
 class _BookmarkState extends State<Bookmark> {
+  final storeController = Get.put(DataStore());
+  final t14 = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return [
@@ -21,13 +26,14 @@ class _BookmarkState extends State<Bookmark> {
       LabelText(
         type: 'Mt',
         value: 'BOOKMARKS',
-        color: Vx.white,
+        color: storeController.fontcolor.value,
       ),
       10.heightBox,
       VxBox(
           child: HStack(
         [
           TextInput(
+            controller: t14,
             obsecure: false,
             label: 'SEARCH',
             animated: true,
@@ -66,7 +72,7 @@ class _BookmarkState extends State<Bookmark> {
                       LabelText(
                               type: 'Mt',
                               value: 'WEBSITE NAME',
-                              color: Vx.white)
+                              color: storeController.fontcolor.value)
                           .centered(),
                       150.widthBox,
                       FaIcon(

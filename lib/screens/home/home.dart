@@ -2,15 +2,20 @@ import 'dart:async';
 import 'package:browser/components/LabelText.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_dropdown/flutter_dropdown.dart';
 import '../../components/Button.dart';
 import '../../components/TextField.dart';
-import 'package:flutter_dropdown/flutter_dropdown.dart';
+import '../../data/datastores.dart';
+import '../web/web.dart';
 
+// ignore: must_be_immutable
 class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
-
+  Home({
+    Key? key,
+  }) : super(key: key);
   @override
   State<Home> createState() => _HomeState();
 }
@@ -20,6 +25,11 @@ class _HomeState extends State<Home> {
   String time = '';
   String period = '';
   bool select = false;
+  final storeController = Get.put(DataStore());
+  final t1 = TextEditingController();
+  final tf1 = TextEditingController();
+  final tf2 = TextEditingController();
+
   @override
   void initState() {
     _getCurrentTime();
@@ -27,15 +37,13 @@ class _HomeState extends State<Home> {
     super.initState();
   }
 
-
-  onSearchIconClick(id) {
+  onSearchIconClick(id) async {
     select = !select;
-    setState(() {});
   }
 
   void _getCurrentTime() {
     DateTime now = DateTime.now();
-    String formattedDate = DateFormat('dd-MM-yyyy EEEE').format(now);
+    String formattedDate = DateFormat('dd-MM-yyyy EEE').format(now);
     String formattedTime = DateFormat('hh:mm:ss').format(now);
     String formattedPeriod = DateFormat('a').format(now);
     setState(() {
@@ -43,6 +51,20 @@ class _HomeState extends State<Home> {
       time = formattedTime;
       period = formattedPeriod;
     });
+  }
+
+  languagecode(language) {
+    switch (language) {
+      case 'English':
+        return 'en';
+      case 'Tamil':
+        return 'ta';
+      case 'Telugu':
+        return 'te';
+      case 'Hindi':
+        return 'hi';
+      default:
+    }
   }
 
   @override
@@ -54,10 +76,11 @@ class _HomeState extends State<Home> {
         [
           (context.safePercentWidth * 24).widthBox,
           TextInput(
-            obsecure: false,
-            label: 'search',
-            animated: select,
-          )
+                  controller: t1,
+                  obsecure: false,
+                  label: 'search',
+                  animated: select,
+                  action: (value) => search(value))
               .animatedBox
               .linearToEaseOut
               .size(select == true ? 590 : 0, select == true ? 30 : 0)
@@ -84,21 +107,21 @@ class _HomeState extends State<Home> {
                     child: LabelText(
                       type: 'Lt',
                       value: time,
-                      color: Vx.white,
-                    ).box.width(160).make(),
+                      color: storeController.fontcolor.value,
+                    ).box.width(180).make(),
                   ),
                   LabelText(
                     type: 'Lt',
                     value: period,
-                    color: Vx.white,
+                    color: storeController.fontcolor.value,
                   ),
                 ]).px32(),
                 HStack([
-                  60.widthBox,
+                  65.widthBox,
                   LabelText(
                     type: 'Mt',
                     value: date,
-                    color: Vx.white,
+                    color: storeController.fontcolor.value,
                   ),
                 ]),
               ]),
@@ -135,9 +158,13 @@ class _HomeState extends State<Home> {
                         Icons.expand_more,
                         color: Colors.blue,
                       ),
-                      onChanged: print,
+                      onChanged: (value) {
+                        storeController.updatetranslation(
+                            languagecode(value), storeController.trdata[0].to);
+                      },
                     ).px12(),
                     TextFormField(
+                      controller: tf1,
                       maxLines: 10,
                       decoration: InputDecoration(
                           border: InputBorder.none,
@@ -146,6 +173,9 @@ class _HomeState extends State<Home> {
                               .blue500
                               .makeCentered()),
                       style: TextStyle(color: Vx.blue500),
+                      onChanged: (value) => {
+                        storeController.translation(value,tf2,tf1),
+                      },
                     ).px(10)
                   ])).white.square(319.5).bottomLeftRounded(value: 20.0).make(),
                   (0.5).widthBox,
@@ -154,10 +184,10 @@ class _HomeState extends State<Home> {
                     HStack(
                       [
                         DropDown(
-                          items: ["English", "Tamil", "Telegu", "Hindi"],
+                          items: ["Tamil", "English", "Telegu", "Hindi"],
                           customWidgets: [
-                            "English".text.blue500.make(),
                             "Tamil".text.blue500.make(),
+                            "English".text.blue500.make(),
                             "Telugu".text.blue500.make(),
                             "Hindi".text.blue500.make(),
                           ],
@@ -167,18 +197,26 @@ class _HomeState extends State<Home> {
                             Icons.expand_more,
                             color: Colors.blue,
                           ),
-                          onChanged: print,
+                          onChanged: (value) => {
+                            storeController.updatetranslation(
+                              storeController.trdata[0].from,
+                              languagecode(value),
+                            )
+                          },
                         ).px12(),
                       ],
                       axisSize: MainAxisSize.max,
                       alignment: MainAxisAlignment.end,
                     ),
                     TextFormField(
+                      controller: tf2,
                       maxLines: 10,
                       readOnly: true,
+                      // initialValue: storeController.trdata[0].translated_data,
                       decoration: InputDecoration(
-                          border: InputBorder.none,
-                          label: 'Translated Text'.text.blue500.makeCentered()),
+                        border: InputBorder.none,
+                        // label: 'Translated Text'.text.blue500.makeCentered()
+                      ),
                       style: TextStyle(color: Vx.blue500),
                     ).px(10)
                   ]))
@@ -194,5 +232,9 @@ class _HomeState extends State<Home> {
                 color: Vx.white,
               ))).blue500.width(640).withRounded(value: 20.0).makeCentered(),
     ]).scrollVertical();
+  }
+
+  search(url) {
+    Get.to(() => SearchScreen(searchQuery: url));
   }
 }

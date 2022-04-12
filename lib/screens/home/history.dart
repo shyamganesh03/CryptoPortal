@@ -1,8 +1,10 @@
 import 'package:browser/components/Divider.dart';
 import 'package:browser/components/LabelText.dart';
 import 'package:browser/components/TextField.dart';
+import 'package:browser/data/datastores.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../components/Button.dart';
@@ -15,6 +17,8 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
+  final storeController = Get.put(DataStore());
+  final t12 = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return [
@@ -22,13 +26,14 @@ class _HistoryState extends State<History> {
       LabelText(
         type: 'Mt',
         value: 'SEARCH HISTORY',
-        color: Vx.white,
+        color: storeController.fontcolor.value,
       ),
       10.heightBox,
       VxBox(
           child: HStack(
         [
           TextInput(
+            controller: t12,
             obsecure: false,
             label: 'SEARCH',
             animated: true,
@@ -67,7 +72,7 @@ class _HistoryState extends State<History> {
                       LabelText(
                         type: 'Mt',
                         value: 'WEBSITE NAME',
-                        color: Vx.white,
+                        color: storeController.fontcolor.value,
                       ).centered(),
                       150.widthBox,
                       FaIcon(

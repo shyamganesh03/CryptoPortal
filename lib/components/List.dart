@@ -1,9 +1,12 @@
+import 'package:get/get.dart';
+
+import '../data/datastores.dart';
 import 'LabelText.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class List extends StatelessWidget {
-  const List({
+  List({
     Key? key,
     @required this.title,
     @required this.icon,
@@ -20,11 +23,11 @@ class List extends StatelessWidget {
   final enabled;
   final action;
   final id;
-
   final radiovalue;
   final fun;
   final gvalue;
   final switchw;
+  final storeController = Get.put(DataStore());
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -39,9 +42,17 @@ class List extends StatelessWidget {
                     ))
                 : context.safePercentWidth < 5.74
                     ? ''.text.make()
-                    : LabelText(type: 'Mt', value: title,color: Vx.white,),
+                    : LabelText(
+                        type: 'Mt',
+                        value: title,
+                        color: storeController.fontcolor.value,
+                      ),
             title: id == 8
-                ? LabelText(type: 'Mt', value: title,color: Vx.white,)
+                ? LabelText(
+                    type: 'Mt',
+                    value: title,
+                    color: storeController.fontcolor.value,
+                  )
                 : context.safePercentWidth < 5.74
                     ? IconButton(
                         onPressed: () {

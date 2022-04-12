@@ -3,9 +3,11 @@ import 'package:browser/components/LabelText.dart';
 import 'package:browser/components/TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../components/Button.dart';
+import '../../data/datastores.dart';
 
 class Download extends StatefulWidget {
   const Download({Key? key}) : super(key: key);
@@ -15,6 +17,8 @@ class Download extends StatefulWidget {
 }
 
 class _DownloadState extends State<Download> {
+  final storeController = Get.put(DataStore());
+  final t13 = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return [
@@ -22,13 +26,14 @@ class _DownloadState extends State<Download> {
       LabelText(
         type: 'Mt',
         value: 'DOWNLOADS',
-        color: Vx.white,
+        color: storeController.fontcolor.value,
       ),
       10.heightBox,
       VxBox(
           child: HStack(
         [
           TextInput(
+            controller: t13,
             obsecure: false,
             label: 'SEARCH',
             animated: true,
@@ -67,7 +72,7 @@ class _DownloadState extends State<Download> {
                       LabelText(
                         type: 'Mt',
                         value: 'WEBSITE NAME',
-                        color: Vx.white,
+                        color: storeController.fontcolor.value,
                       ).centered(),
                       150.widthBox,
                       FaIcon(

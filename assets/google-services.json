@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "937843932985",
+    "project_id": "browser-bbf79",
+    "storage_bucket": "browser-bbf79.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:937843932985:android:f9949a4166e1509d6fb2e8",
+        "android_client_info": {
+          "package_name": "com.a.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "937843932985-md0c9k7u1q04s7p5j2j9ounqcl6ig769.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDobUOhOphj5qVIxPud0fHlzFkMGZUghn8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "937843932985-md0c9k7u1q04s7p5j2j9ounqcl6ig769.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

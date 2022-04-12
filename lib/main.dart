@@ -1,19 +1,31 @@
-import 'package:browser/screens/auth/Log_in.dart';
+import 'package:firebase_dart/firebase_dart.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:velocity_x/velocity_x.dart';
+import 'package:get/get.dart';
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+import './config/colors.dart';
+import 'data/datastores.dart';
+import 'screens/home/Mhome.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  FirebaseDart.setup();
+  final storeController = Get.put(DataStore());
+  storeController.initial();
+  storeController.getuserdata();
+
   runApp(GetMaterialApp(
-      theme: ThemeData(
-          iconTheme: IconThemeData(
-        color: Vx.white,
-      )),
-      darkTheme: ThemeData(
-          iconTheme: IconThemeData(
-        color: Vx.blue200,
-      )),
-      // themeMode: ThemeMode.light,
       debugShowCheckedModeBanner: false,
-      home: LogIn()));
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: backgroundColor,
+      ),
+      home: MHome()));
+  doWhenWindowReady(() {
+    final win = appWindow;
+    final initialSize = Size(950, 500);
+    win.minSize = initialSize;
+    win.size = initialSize;
+    win.alignment = Alignment.center;
+    win.title = "Crypto Portal";
+    win.show();
+  });
 }

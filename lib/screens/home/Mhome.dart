@@ -1,6 +1,7 @@
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:browser/screens/auth/Log_in.dart';
 import 'package:get/get.dart';
-
+import '../../data/datastores.dart';
 import './bookmark.dart';
 import './Language.dart';
 import './downloads.dart';
@@ -13,9 +14,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../components/Button.dart';
 
+// ignore: must_be_immutable
 class MHome extends StatefulWidget {
-  const MHome({Key? key}) : super(key: key);
-
+  MHome({Key? key}) : super(key: key);
   @override
   State<MHome> createState() => _MHomeState();
 }
@@ -28,6 +29,7 @@ class _MHomeState extends State<MHome> {
       enable5 = false,
       enable6 = false,
       enable7 = false;
+  final storeController = Get.put(DataStore());
   clicked(id) {
     switch (id) {
       case 1:
@@ -125,78 +127,114 @@ class _MHomeState extends State<MHome> {
 
   @override
   Widget build(BuildContext context) {
+    final buttonColors = WindowButtonColors(
+        iconNormal: Colors.white,
+        mouseOver: Colors.black,
+        mouseDown: Color(0xFF805306),
+        iconMouseOver: Colors.white,
+        iconMouseDown: Color(0xFFFFD500));
+
+    final closeButtonColors = WindowButtonColors(
+        mouseOver: Color(0xFFD32F2F),
+        mouseDown: Color(0xFFB71C1C),
+        iconNormal: Colors.white,
+        iconMouseOver: Colors.white);
     return Scaffold(
-      body: ZStack([
-        VxBox()
-            .size(context.screenWidth, context.screenHeight)
-            .bgImage(DecorationImage(
-                image: AssetImage('assets/temp3.jpg'), fit: BoxFit.cover))
-            .make(),
-        HStack([
+      backgroundColor: Color.fromRGBO(52, 123, 163, 1), //52, 123, 163
+      body: WindowBorder(
+        color: Vx.blue500,
+        width: 1,
+        child: VStack([
           VxBox(
-                  child: VStack(
-            [
-              IButton(
-                action: clicked,
-                icon: FontAwesomeIcons.solidBuilding,
-                id: 1,
-                enabled: enable1,
-              ),
-              IButton(
-                action: clicked,
-                icon: FontAwesomeIcons.brush,
-                id: 2,
-                enabled: enable2,
-              ),
-              IButton(
-                action: clicked,
-                icon: FontAwesomeIcons.lock,
-                id: 3,
-                enabled: enable3,
-              ),
-              IButton(
-                action: clicked,
-                icon: FontAwesomeIcons.bookBookmark,
-                id: 4,
-                enabled: enable4,
-              ),
-              IButton(
-                action: clicked,
-                icon: FontAwesomeIcons.clockRotateLeft,
-                id: 5,
-                enabled: enable5,
-              ),
-              IButton(
-                action: clicked,
-                icon: FontAwesomeIcons.download,
-                id: 6,
-                enabled: enable6,
-              ),
-              IButton(
-                action: clicked,
-                icon: FontAwesomeIcons.language,
-                id: 7,
-                enabled: enable7,
-              ),
-              IButton(
-                  action: () => Get.to(() => LogIn()),
-                  icon: FontAwesomeIcons.arrowUpFromBracket,
-                  id: 9,
-                  enabled: true)
-            ],
-            axisSize: MainAxisSize.max,
-            alignment: MainAxisAlignment.spaceEvenly,
-            crossAlignment: CrossAxisAlignment.center,
-          ))
-              .size(context.safePercentWidth * 4, context.screenHeight)
-              .make()
-              .material(elevation: 5.0, color: Colors.transparent),
-          VxBox(child: render())
-              .size(context.safePercentWidth * 95, context.screenHeight)
-              .make(),
+              child: HStack([
+            VxBox(child: MoveWindow()).make().expand(),
+            WindowTitleBarBox(
+                child: [
+              MinimizeWindowButton(colors: buttonColors),
+              MaximizeWindowButton(colors: buttonColors),
+              CloseWindowButton(colors: closeButtonColors),
+            ].hStack()),
+          ])).blue200.size(context.screenWidth, 30).make(),
+          VxBox(
+            child: ZStack([
+              // VxBox()
+              //     .width(context.screenWidth)
+              //     .bgImage(DecorationImage(
+              //         image: AssetImage('assets/images/temp3.jpg'),
+              //         fit: BoxFit.cover))
+              //     .make(),
+              HStack([
+                VxBox(
+                        child: VStack(
+                  [
+                    IButton(
+                      action: clicked,
+                      icon: FontAwesomeIcons.solidBuilding,
+                      id: 1,
+                      enabled: enable1,
+                    ),
+                    IButton(
+                      action: clicked,
+                      icon: FontAwesomeIcons.brush,
+                      id: 2,
+                      enabled: enable2,
+                    ),
+                    IButton(
+                      action: clicked,
+                      icon: FontAwesomeIcons.lock,
+                      id: 3,
+                      enabled: enable3,
+                    ),
+                    IButton(
+                      action: clicked,
+                      icon: FontAwesomeIcons.bookBookmark,
+                      id: 4,
+                      enabled: enable4,
+                    ),
+                    IButton(
+                      action: clicked,
+                      icon: FontAwesomeIcons.clockRotateLeft,
+                      id: 5,
+                      enabled: enable5,
+                    ),
+                    IButton(
+                      action: clicked,
+                      icon: FontAwesomeIcons.download,
+                      id: 6,
+                      enabled: enable6,
+                    ),
+                    IButton(
+                      action: clicked,
+                      icon: FontAwesomeIcons.language,
+                      id: 7,
+                      enabled: enable7,
+                    ),
+                    IButton(
+                        action: () => Get.to(() => LogIn()),
+                        icon: FontAwesomeIcons.user,
+                        id: 12,
+                        enabled: true),
+                    IButton(
+                        action: () => Get.to(() => LogIn()),
+                        icon: FontAwesomeIcons.arrowUpFromBracket,
+                        id: 9,
+                        enabled: true)
+                  ],
+                  axisSize: MainAxisSize.max,
+                  alignment: MainAxisAlignment.spaceEvenly,
+                  crossAlignment: CrossAxisAlignment.center,
+                ))
+                    .size(context.safePercentWidth * 4, context.screenHeight)
+                    .make()
+                    .material(elevation: 5.0, color: Colors.transparent),
+                VxBox(child: render())
+                    .size(context.safePercentWidth * 95, context.screenHeight)
+                    .make(),
+              ]),
+            ]),
+          ).make().expand(),
         ]),
-      ]),
-      
+      ),
     );
   }
 }

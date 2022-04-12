@@ -1,8 +1,10 @@
 import 'package:browser/components/Button.dart';
 import 'package:browser/components/TextField.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../components/LabelText.dart';
+import '../../data/datastores.dart';
 
 class Password extends StatefulWidget {
   const Password({Key? key}) : super(key: key);
@@ -12,7 +14,11 @@ class Password extends StatefulWidget {
 }
 
 class _PasswordState extends State<Password> {
+  final t9 = TextEditingController();
+  final t10 = TextEditingController();
+  final t11 = TextEditingController();
   bool verified = false;
+  final storeController = Get.put(DataStore());
   Widget resetPassword() {
     return VxBox(
             child: [
@@ -20,11 +26,13 @@ class _PasswordState extends State<Password> {
         obsecure: false,
         label: 'ENTER YOUR NEW PASSWORD',
         animated: true,
+        controller: t9,
       ),
       TextInput(
         obsecure: false,
         label: 'RE ENTER YOUR PASSWORD',
         animated: true,
+        controller: t10,
       ),
     ].vStack(
                 axisSize: MainAxisSize.max,
@@ -45,10 +53,14 @@ class _PasswordState extends State<Password> {
       child: [
         (context.safePercentHeight * 10).heightBox,
         LabelText(
-            type: 'Mt', value: 'You can change your browser password here',color: Vx.white,),
+          type: 'Mt',
+          value: 'You can change your browser password here',
+          color: storeController.fontcolor.value,
+        ),
         (context.safePercentHeight * 5).heightBox,
         verified == false
             ? TextInput(
+                controller: t11,
                 obsecure: false,
                 label: 'ENTER YOUR OLD PASSWORD',
                 animated: true,

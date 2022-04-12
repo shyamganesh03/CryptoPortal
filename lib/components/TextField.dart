@@ -7,19 +7,25 @@ class TextInput extends StatelessWidget {
       required this.label,
       required this.animated,
       required this.obsecure,
+      required this.controller,
+      this.action,
       this.icon})
       : super(key: key);
   final label;
   final animated;
   final icon;
   final obsecure;
+  final controller;
+  final action;
   @override
   Widget build(BuildContext context) {
     return VxBox(
       child: VxTextField(
+        controller: controller,
         isPassword: obsecure,
         obscureText: obsecure,
         icon: icon,
+        onSubmitted: (value) => action(value),
         keyboardType: TextInputType.multiline,
         labelText: label,
         fillColor: Color(0x7A222020),
