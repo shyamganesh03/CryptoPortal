@@ -40,8 +40,11 @@ class _SearchScreenState extends State<SearchScreen> {
       await webcontroller
           .loadUrl('https://www.google.com/search?q=${widget.searchQuery}');
       await webcontroller.setPopupWindowPolicy(WebviewPopupWindowPolicy.deny);
-      storeController.firebasedata[0].emailid != null &&
+      storeController.firebasedata.length != 0 &&
+          storeController.firebasedata[0].emailid != null &&
           storeController.updatehistory(serachurl);
+      // storeController.firebasedata[0].emailid != null &&
+      //     storeController.updatehistory(serachurl);
       if (!mounted) return;
       setState(() {});
     } on PlatformException catch (e) {
@@ -104,7 +107,7 @@ class _SearchScreenState extends State<SearchScreen> {
           child: IButton(
             id: 13,
             icon: FontAwesomeIcons.houseChimney,
-            action: () => Get.back(),
+            action: () => storeController.changePage(1),
           ),
         ).blue700.roundedFull.make().positioned(
             bottom: context.safePercentHeight * 15,
