@@ -12,7 +12,6 @@ void main() async {
   FirebaseDart.setup();
   final storeController = Get.put(DataStore());
   storeController.initial();
-  storeController.getuserdata();
 
   runApp(GetMaterialApp(
       debugShowCheckedModeBanner: false,

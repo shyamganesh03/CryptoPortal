@@ -10,17 +10,17 @@ class UserDatas {
   UserDatas({
     this.firstname,
     this.lastname,
-    this.bookmark,
+    required this.bookmark,
     this.emailid,
-    this.history,
-    this.download,
+    required this.history,
+    required this.download,
   });
   final firstname;
   final lastname;
   final emailid;
-  final history;
-  final bookmark;
-  final download;
+  var history = [];
+  var bookmark = [];
+  var download = [];
 }
 
 class Translation {
@@ -159,7 +159,9 @@ class DataStore extends GetxController {
           lastname: value['lname'],
           emailid: value['emailId'],
           history: value['history'],
-          bookmark: ''));
+          bookmark: [],
+          download: [],
+          ));
     }));
   }
 

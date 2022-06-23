@@ -18,6 +18,13 @@ class Bookmark extends StatefulWidget {
 class _BookmarkState extends State<Bookmark> {
   final storeController = Get.put(DataStore());
   final t14 = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    print(storeController.firebasedata.length);
+  }
+
   @override
   Widget build(BuildContext context) {
     return [
@@ -49,13 +56,16 @@ class _BookmarkState extends State<Bookmark> {
       20.heightBox,
       Div(),
       20.heightBox,
-      storeController.firebasedata == []
+      storeController.firebasedata.length == 0 ||
+              storeController.firebasedata[0].bookmark.length == 0
           ? LabelText(
-                  type: 'Mt', value: 'NO BOOKMARK AVAILABLE', color: Vx.blue400)
+                  type: 'Mt', value: 'NO bookmark AVAILABLE', color: Vx.white)
               .centered()
           : VxBox(
               child: ListView.builder(
-                  itemCount: storeController.firebasedata[0].bookmark.length,
+                  itemCount: storeController.firebasedata.length == 0
+                      ? 0
+                      : storeController.firebasedata[0].bookmark.length,
                   itemBuilder: (context, index) {
                     return VStack([
                       VxBox(
@@ -63,8 +73,11 @@ class _BookmarkState extends State<Bookmark> {
                         [
                           LabelText(
                                   type: 'Mt',
-                                  value: storeController
-                                      .firebasedata[0].bookmark[index],
+                                  value:
+                                      storeController.firebasedata.length == 0
+                                          ? ''
+                                          : storeController
+                                              .firebasedata[0].bookmark[index],
                                   color: storeController.fontcolor.value)
                               .centered(),
                           150.widthBox,

@@ -108,7 +108,7 @@ class _HomeState extends State<Home> {
                   animated: select,
                   action: (value) async {
                     await storeController.serach(value);
-                    storeController.changePage(7);
+                    storeController.changePage(20);
                   })
               .animatedBox
               .linearToEaseOut

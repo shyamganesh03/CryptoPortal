@@ -122,6 +122,7 @@ class _LogInState extends State<LogIn> {
                               try {
                                 await storeController.userLogin(
                                     t7.text, t8.text);
+                                storeController.getuserdata();
                                 Get.to(() => MHome());
                               } catch (e) {
                                 showDialog(

@@ -1,4 +1,3 @@
-import 'package:browser/screens/home/Mhome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -30,7 +29,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> initPlatformState() async {
-    final serachurl = 'https://www.google.com/search?q=${widget.searchQuery}';
+    String serachurl = 'https://www.google.com/search?q=${widget.searchQuery}';
     try {
       await webcontroller.initialize();
       webcontroller.url.listen((url) {
@@ -38,9 +37,10 @@ class _SearchScreenState extends State<SearchScreen> {
       });
 
       await webcontroller.setBackgroundColor(Colors.transparent);
-      await webcontroller.loadUrl(serachurl);
+      await webcontroller
+          .loadUrl('https://www.google.com/search?q=${widget.searchQuery}');
       await webcontroller.setPopupWindowPolicy(WebviewPopupWindowPolicy.deny);
-      storeController.firebasedata[0].history.length > 0 &&
+      storeController.firebasedata[0].emailid != null &&
           storeController.updatehistory(serachurl);
       if (!mounted) return;
       setState(() {});
@@ -104,7 +104,7 @@ class _SearchScreenState extends State<SearchScreen> {
           child: IButton(
             id: 13,
             icon: FontAwesomeIcons.houseChimney,
-            action: () => Get.to(() => MHome()),
+            action: () => Get.back(),
           ),
         ).blue700.roundedFull.make().positioned(
             bottom: context.safePercentHeight * 15,

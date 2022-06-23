@@ -33,13 +33,13 @@ class _MHomeState extends State<MHome> {
         return Home();
       case 2:
         return Themes();
-      case 3:
-        return Bookmark();
       case 4:
-        return History();
+        return Bookmark();
       case 5:
-        return Download();
+        return History();
       case 6:
+        return Download();
+      case 7:
         return Language();
       default:
         return Home();
@@ -97,7 +97,7 @@ class _MHomeState extends State<MHome> {
           ])).blue200.size(context.screenWidth, 30).make(),
           VxBox(
             child: ZStack([
-              storeController.navigation.value != 7
+              Obx((() => storeController.navigation.value != 20
                   ? HStack([
                       VxBox(
                               child: VStack(
@@ -182,7 +182,7 @@ class _MHomeState extends State<MHome> {
                     ])
                   : SearchScreen(
                       searchQuery: storeController.searchquerry.value,
-                    ),
+                    )))
             ]),
           ).make().expand(),
         ]),
