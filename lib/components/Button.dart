@@ -32,23 +32,21 @@ class Button extends StatelessWidget {
 }
 
 class IButton extends StatelessWidget {
-   IButton(
-      {Key? key,
-      required this.action,
-      required this.icon,
-      required this.id,
-      required this.enabled})
-      : super(key: key);
+  IButton({
+    Key? key,
+    required this.action,
+    required this.icon,
+    required this.id,
+  }) : super(key: key);
   final id;
   final action;
   final icon;
-  final enabled;
   final storeController = Get.put(DataStore());
   @override
   Widget build(BuildContext context) {
     return IconButton(
         onPressed: () => {
-              if (id == 9)
+              if (id == 9 || id == 12 || id == 13)
                 action()
               else if (id == 10)
                 action('l')
@@ -60,7 +58,7 @@ class IButton extends StatelessWidget {
         icon: FaIcon(
           icon,
           size: 20.0,
-          color:storeController.iconcolor.value,
+          color: id == 13 ? Colors.blue : storeController.iconcolor.value,
         ));
   }
 }

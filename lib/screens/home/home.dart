@@ -6,16 +6,19 @@ import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_dropdown/flutter_dropdown.dart';
+import '../../components/Alert.dart';
 import '../../components/Button.dart';
 import '../../components/TextField.dart';
 import '../../data/datastores.dart';
-import '../web/web.dart';
 
 // ignore: must_be_immutable
 class Home extends StatefulWidget {
   Home({
     Key? key,
+    this.search,
   }) : super(key: key);
+  final t1 = TextEditingController();
+  var search;
   @override
   State<Home> createState() => _HomeState();
 }
@@ -26,15 +29,38 @@ class _HomeState extends State<Home> {
   String period = '';
   bool select = false;
   final storeController = Get.put(DataStore());
-  final t1 = TextEditingController();
   final tf1 = TextEditingController();
   final tf2 = TextEditingController();
 
   @override
   void initState() {
+    super.initState();
     _getCurrentTime();
     Timer.periodic(Duration(seconds: 1), (Timer t) => _getCurrentTime());
-    super.initState();
+    if (storeController.navigation.value > 7)
+      switch (storeController.navigation.value) {
+        case 8:
+          alert('PAGE NOT AVAILABLE');
+          break;
+        case 9:
+          alert('ICON COLOR NOT AVAILABLE');
+          break;
+        case 10:
+          alert('TEXT COLOR NOT AVAILABLE');
+          break;
+        default:
+      }
+  }
+
+  alert(message) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Alert(
+            type: 'errorS',
+            content: message,
+          );
+        });
   }
 
   onSearchIconClick(id) async {
@@ -76,11 +102,14 @@ class _HomeState extends State<Home> {
         [
           (context.safePercentWidth * 24).widthBox,
           TextInput(
-                  controller: t1,
+                  controller: widget.t1,
                   obsecure: false,
                   label: 'search',
                   animated: select,
-                  action: (value) => search(value))
+                  action: (value) async {
+                    await storeController.serach(value);
+                    storeController.changePage(7);
+                  })
               .animatedBox
               .linearToEaseOut
               .size(select == true ? 590 : 0, select == true ? 30 : 0)
@@ -91,7 +120,6 @@ class _HomeState extends State<Home> {
             action: onSearchIconClick,
             icon: FontAwesomeIcons.magnifyingGlass,
             id: 8,
-            enabled: false,
           ),
         ],
       ))
@@ -174,7 +202,7 @@ class _HomeState extends State<Home> {
                               .makeCentered()),
                       style: TextStyle(color: Vx.blue500),
                       onChanged: (value) => {
-                        storeController.translation(value,tf2,tf1),
+                        storeController.translation(value, tf2, tf1),
                       },
                     ).px(10)
                   ])).white.square(319.5).bottomLeftRounded(value: 20.0).make(),
@@ -232,9 +260,5 @@ class _HomeState extends State<Home> {
                 color: Vx.white,
               ))).blue500.width(640).withRounded(value: 20.0).makeCentered(),
     ]).scrollVertical();
-  }
-
-  search(url) {
-    Get.to(() => SearchScreen(searchQuery: url));
   }
 }

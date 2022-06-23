@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:browser/components/Button.dart';
 import 'package:browser/components/LabelText.dart';
@@ -7,9 +5,8 @@ import 'package:browser/components/TextField.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:velocity_x/velocity_x.dart';
-import '../../config/api_keys.dart';
+import '../../components/Alert.dart';
 import '../../data/datastores.dart';
 import 'Log_in.dart';
 
@@ -41,6 +38,16 @@ class _SigninState extends State<Signin> {
       mouseDown: Color(0xFFB71C1C),
       iconNormal: Colors.white,
       iconMouseOver: Colors.white);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,41 +172,17 @@ class _SigninState extends State<Signin> {
                         Button(
                             label: 'Create',
                             action: () async {
-                              print('work');
-                              String fname = t2.text,
-                                  lname = t3.text,
-                                  mailId = t4.text,
-                                  p1 = t5.text,
-                                  p2 = t6.text;
                               try {
-                                if (p1 == p2) {
-                                  http
-                                      .post(
-                                          Uri.parse(
-                                              "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseapi}"),
-                                          body: json.encode({
-                                            'email': mailId,
-                                            'password': p1
-                                          }))
-                                      .then((value) => {
-                                            http.post(
-                                                Uri.parse(
-                                                    "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseapi}"),
-                                                body: json.encode({
-                                                  "requestType": "VERIFY_EMAIL",
-                                                  "idToken": json.decode(
-                                                      value.body)['idToken'],
-                                                }))
-                                          })
-                                      .then((value) => storeController.postdata(
-                                          fname, lname, mailId, p1));
+                                if (t5.text == t6.text) {
+                                  storeController.newuser(
+                                      t4.text, t5.text, t2.text, t3.text);
                                 } else {
                                   showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: Text("Alert Dialog"),
-                                          content: Text("Dialog Content"),
+                                        return Alert(
+                                          type: 'error',
+                                          content: 'PASSWOARD NOT MATCH',
                                         );
                                       });
                                 }

@@ -130,7 +130,7 @@ class _ThemesState extends State<Themes> {
                       action: _openColorPicker,
                       icon: FontAwesomeIcons.a,
                       id: 10,
-                      enabled: false)
+                      )
                 ],
                 axisSize: MainAxisSize.max,
                 alignment: MainAxisAlignment.spaceAround,
@@ -145,7 +145,7 @@ class _ThemesState extends State<Themes> {
                       action: _openColorPicker,
                       icon: FontAwesomeIcons.i,
                       id: 11,
-                      enabled: false)
+                      )
                 ],
                 axisSize: MainAxisSize.max,
                 alignment: MainAxisAlignment.spaceAround,

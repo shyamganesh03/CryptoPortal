@@ -1,9 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:python/python.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:translator/translator.dart';
 import 'package:http/http.dart' as http;
+import '../../config/api_keys.dart';
 
 class UserDatas {
   UserDatas(
@@ -30,8 +32,20 @@ class DataStore extends GetxController {
   final font_name = 'Roboto'.obs;
   final fontcolor = Vx.white.obs;
   final iconcolor = Vx.white.obs;
+  final searchquerry = ''.obs;
   final firebasedata = <UserDatas>[].obs;
   final trdata = <Translation>[].obs;
+  final navigation = 1.obs;
+  final color = ''.obs;
+  List<Module> modules = [
+    Module("pip", "22.1.2"),
+    Module("ez-setup", "0.9"),
+    Module("setuptools", "62.3.2"),
+    Module("wheel", "0.37.1"),
+    Module("SpeechRecognition", "3.8.1"),
+    Module("PyAudio", "0.2.11"),
+    Module("pyttsx3", "2.90"),
+  ];
   final translator = GoogleTranslator();
 
   initial() {
@@ -40,6 +54,78 @@ class DataStore extends GetxController {
       to: 'ta',
       translated_data: '',
     ));
+  }
+
+  changePage(index) {
+    navigation(index);
+  }
+
+  speehControl(String stream) {
+    String color = '';
+    if (stream.trim().contains('change icon color to')) {
+      color = stream.substring('change icon color to'.length);
+      switch (color.trim()) {
+        case 'blue':
+          iconcolor(Colors.blue);
+          break;
+        case 'green':
+          iconcolor(Colors.green);
+          break;
+        case 'red':
+          iconcolor(Colors.red);
+          break;
+        case 'white':
+          iconcolor(Colors.white);
+          break;
+        default:
+          navigation(9);
+      }
+    }
+    if (stream.trim().contains('change text color to')) {
+      color = stream.substring('change text color to'.length);
+      switch (color.trim()) {
+        case 'blue':
+          iconcolor(Colors.blue);
+          break;
+        case 'green':
+          iconcolor(Colors.green);
+          break;
+        case 'red':
+          iconcolor(Colors.red);
+          break;
+        case 'white':
+          iconcolor(Colors.white);
+          break;
+        default:
+          navigation(10);
+      }
+    } else
+      switch (stream.trim()) {
+        case 'goto home':
+          navigation(1);
+          break;
+        case 'goto theme':
+          navigation(2);
+          break;
+        case 'goto bookmark':
+          navigation(3);
+          break;
+        case 'goto history':
+          navigation(4);
+          break;
+        case 'goto download':
+          navigation(5);
+          break;
+        case 'goto language':
+          navigation(6);
+          break;
+        default:
+          navigation(8);
+      }
+  }
+
+  serach(value) {
+    searchquerry(value);
   }
 
   updatetranslation(from, to) {
@@ -94,6 +180,47 @@ class DataStore extends GetxController {
           'password': password,
           'history': [],
           'bookmark': [],
+        }));
+  }
+
+  newuser(
+    mailId,
+    p1,
+    fname,
+    lname,
+  ) {
+    http
+        .post(
+            Uri.parse(
+                "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseapi}"),
+            body: json.encode({'email': mailId, 'password': p1}))
+        .then((value) => {
+              http.post(
+                  Uri.parse(
+                      "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseapi}"),
+                  body: json.encode({
+                    "requestType": "VERIFY_EMAIL",
+                    "idToken": json.decode(value.body)['idToken'],
+                  }))
+            })
+        .then((value) => postdata(fname, lname, mailId, p1));
+  }
+
+  userLogin(email, password) {
+    return http.post(
+        Uri.parse(
+            'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseapi}'),
+        body: json.encode(
+            {"email": email, "password": password, "returnSecureToken": true}));
+  }
+
+  updatepassword() {
+    http.post(
+        Uri.parse(
+            'https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${firebaseapi}'),
+        body: json.encode({
+          "requestType": "PASSWORD_RESET",
+          "email": firebasedata[0].emailid,
         }));
   }
 }

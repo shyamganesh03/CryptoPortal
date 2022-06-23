@@ -1,12 +1,12 @@
+import 'package:browser/screens/home/Mhome.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:tabbed_view/tabbed_view.dart';
 import 'package:velocity_x/velocity_x.dart';
-import '../../config/colors.dart';
-import '../../config/api_service.dart';
-import '../../components/search_footer.dart';
-import '../../components/web_search_header.dart';
-import '../../components/search_result_component.dart';
-import '../../components/search_tabs.dart';
+import 'package:webview_windows/webview_windows.dart';
+import '../../components/Button.dart';
 
 class SearchScreen extends StatefulWidget {
   final String searchQuery;
@@ -19,188 +19,97 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  late TabbedViewController _controller;
+  // late TabbedViewController _controller;
+  final webcontroller = WebviewController();
+
+  final _textController = TextEditingController();
   List<TabData> tabs = [];
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    tabs.add(TabData(
-        text: 'Tab 1',
-        content: Container(
-          decoration: BoxDecoration(color: Vx.black),
-          child: Padding(
-            padding:
-                EdgeInsets.only(left: context.screenWidth <= 768 ? 10 : 150.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // for the header part of the website showing search text field
-                  const WebSearchHeader(),
-                  // for showing ALL, IMAGES, MAPS etc tabs
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: context.screenWidth <= 768 ? 10 : 150.0),
-                    child: const SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: SearchTabs(),
-                    ),
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  Future<void> initPlatformState() async {
+    try {
+      await webcontroller.initialize();
+      webcontroller.url.listen((url) {
+        _textController.text = url;
+      });
+
+      await webcontroller.setBackgroundColor(Colors.transparent);
+      await webcontroller
+          .loadUrl('https://www.google.com/search?q=${widget.searchQuery}');
+      await webcontroller.setPopupWindowPolicy(WebviewPopupWindowPolicy.deny);
+
+      if (!mounted) return;
+      setState(() {});
+    } on PlatformException catch (e) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                  title: Text('Error'),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Code: ${e.code}'),
+                      Text('Message: ${e.message}'),
+                    ],
                   ),
-                  const Divider(
-                    height: 0,
-                    thickness: 0,
-                  ),
-                  // showing search results
-                  FutureBuilder<Map<String, dynamic>>(
-                    future: ApiService().fetchData(
-                        context: context,
-                        queryTerm: widget.searchQuery,
-                        start: widget.start),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        //
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // showing the time it took to fetch results
-                            Container(
-                              padding: EdgeInsets.only(
-                                  left: context.screenWidth <= 768 ? 10 : 150,
-                                  top: 12),
-                              child: Text(
-                                "About ${snapshot.data?['searchInformation']['formattedTotalResults']} results (${snapshot.data?['searchInformation']['formattedSearchTime']} seconds)",
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  color: Color(0xFF70757a),
-                                ),
-                              ),
-                            ),
-                            // displaying the results
-                            ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: snapshot.data?['items'].length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding: EdgeInsets.only(
-                                      left:
-                                          context.screenWidth <= 768 ? 10 : 150,
-                                      top: 10),
-                                  child: SearchResultComponent(
-                                    linkToGo: snapshot.data?['items'][index]
-                                        ['link'],
-                                    link: snapshot.data?['items'][index]
-                                        ['formattedUrl'],
-                                    text: snapshot.data?['items'][index]
-                                        ['title'],
-                                    desc: snapshot.data?['items'][index]
-                                        ['snippet'],
-                                  ),
-                                );
-                              },
-                            ),
-                            const SizedBox(height: 30),
-                            // pagination
-                            SizedBox(
-                              width: double.infinity,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                      child: const Text(
-                                        "< Prev",
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: blueColor,
-                                        ),
-                                      ),
-                                      // if start is 0, we are on the first page
-                                      onPressed: widget.start != "0"
-                                          ? () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SearchScreen(
-                                                    searchQuery:
-                                                        widget.searchQuery,
-                                                    start: (int.parse(
-                                                                widget.start) -
-                                                            10)
-                                                        .toString(),
-                                                  ),
-                                                ),
-                                              );
-                                            }
-                                          : () {}),
-                                  const SizedBox(width: 30),
-                                  TextButton(
-                                    child: const Text(
-                                      "Next >",
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: blueColor,
-                                      ),
-                                    ),
-                                    // if start is 0, we are on the first page
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => SearchScreen(
-                                            searchQuery: widget.searchQuery,
-                                            start:
-                                                (int.parse(widget.start) + 10)
-                                                    .toString(),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 30),
-                            const SearchFooter(),
-                          ],
-                        );
-                      }
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        )));
-    _controller = TabbedViewController(tabs);
+                  actions: [
+                    TextButton(
+                      child: Text('Continue'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                ));
+      });
+    }
+  }
+
+  Widget webwidget() {
+    return Stack(
+      children: [
+        Webview(
+          webcontroller,
+        ),
+        StreamBuilder<LoadingState>(
+            stream: webcontroller.loadingState,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data == LoadingState.loading) {
+                return LinearProgressIndicator();
+              } else {
+                return SizedBox();
+              }
+            }),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    TabbedView tabbedView = TabbedView(controller: _controller);
-    Widget w =
-        TabbedViewTheme(child: tabbedView, data: TabbedViewThemeData.classic());
-
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
-      child: Title(
-        // for the title of the website
-        color: Colors.blue, // This is required
-        title: widget.searchQuery,
-        child: Scaffold(
-          body: Container(
-            child: w,
-          ),
+      child: ZStack([
+        Container(
+          child: webwidget(),
         ),
-      ),
+        VxBox(
+          child: IButton(
+            id: 13,
+            icon: FontAwesomeIcons.houseChimney,
+            action: () => Get.to(() => MHome()),
+          ),
+        ).blue700.roundedFull.make().positioned(
+            bottom: context.safePercentHeight * 15,
+            left: context.safePercentWidth * 1)
+      ]),
     );
   }
 }

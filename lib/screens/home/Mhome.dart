@@ -1,16 +1,18 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:browser/screens/auth/Log_in.dart';
 import 'package:get/get.dart';
+import '../../components/Alert.dart';
 import '../../data/datastores.dart';
+import '../web/web.dart';
 import './bookmark.dart';
 import './Language.dart';
 import './downloads.dart';
 import './history.dart';
 import './home.dart';
-import './password.dart';
 import './theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:python/python.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../components/Button.dart';
 
@@ -22,107 +24,61 @@ class MHome extends StatefulWidget {
 }
 
 class _MHomeState extends State<MHome> {
-  bool enable1 = false,
-      enable2 = false,
-      enable3 = false,
-      enable4 = false,
-      enable5 = false,
-      enable6 = false,
-      enable7 = false;
+  Python pythonScript = Python();
+
   final storeController = Get.put(DataStore());
-  clicked(id) {
-    switch (id) {
+  var a = false;
+
+  Widget render(value) {
+    switch (value) {
       case 1:
-        enable1 = true;
-        enable2 = false;
-        enable3 = false;
-        enable4 = false;
-        enable5 = false;
-        enable6 = false;
-        enable7 = false;
-        setState(() {});
-        break;
+        return Home();
       case 2:
-        enable1 = false;
-        enable2 = true;
-        enable3 = false;
-        enable4 = false;
-        enable5 = false;
-        enable6 = false;
-        enable7 = false;
-        setState(() {});
-        break;
+        return Themes();
       case 3:
-        enable1 = false;
-        enable2 = false;
-        enable3 = true;
-        enable4 = false;
-        enable5 = false;
-        enable6 = false;
-        enable7 = false;
-        setState(() {});
-        break;
+        return Bookmark();
       case 4:
-        enable1 = false;
-        enable2 = false;
-        enable3 = false;
-        enable4 = true;
-        enable5 = false;
-        enable6 = false;
-        enable7 = false;
-        setState(() {});
-        break;
+        return History();
       case 5:
-        enable1 = false;
-        enable2 = false;
-        enable3 = false;
-        enable4 = false;
-        enable5 = true;
-        enable6 = false;
-        enable7 = false;
-        setState(() {});
-        break;
+        return Download();
       case 6:
-        enable1 = false;
-        enable2 = false;
-        enable3 = false;
-        enable4 = false;
-        enable5 = false;
-        enable6 = true;
-        enable7 = false;
-        setState(() {});
-        break;
-      case 7:
-        enable1 = false;
-        enable2 = false;
-        enable3 = false;
-        enable4 = false;
-        enable5 = false;
-        enable6 = false;
-        enable7 = true;
-        setState(() {});
-        break;
+        return Language();
       default:
+        return Home();
     }
   }
 
-  Widget render() {
-    if (enable1 == true)
-      return Home();
-    else if (enable2 == true)
-      return Themes();
-    else if (enable3 == true)
-      return Password();
-    else if (enable4 == true)
-      return Bookmark();
-    else if (enable5 == true)
-      return History();
-    else if (enable6 == true)
-      return Download();
-    else if (enable7 == true)
-      return Language();
-    else
-      return Home();
+  @override
+  void initState() {
+    super.initState();
+    // initialspeech();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('dependencies change');
+    // Get.lazyPut(() => StoreController();)
+  }
+
+  initialspeech() async {
+    while (true) {
+      print('started');
+      if (a == false) {
+        await pythonScript.addModules(storeController.modules);
+        a = true;
+        setState(() {});
+        print('script added');
+      }
+      await pythonScript
+          .execute('assets/speech.py')
+          .then((value) => print(value));
+      print('finished');
+    }
+  }
+
+  page(value) {
+    storeController.changePage(value);
   }
 
   @override
@@ -140,7 +96,9 @@ class _MHomeState extends State<MHome> {
         iconNormal: Colors.white,
         iconMouseOver: Colors.white);
     return Scaffold(
-      backgroundColor: Color.fromRGBO(52, 123, 163, 1), //52, 123, 163
+      backgroundColor: storeController.navigation.value != 7
+          ? Color.fromRGBO(52, 123, 163, 1)
+          : Colors.transparent, //52, 123, 163
       body: WindowBorder(
         color: Vx.blue500,
         width: 1,
@@ -157,80 +115,87 @@ class _MHomeState extends State<MHome> {
           ])).blue200.size(context.screenWidth, 30).make(),
           VxBox(
             child: ZStack([
-              // VxBox()
-              //     .width(context.screenWidth)
-              //     .bgImage(DecorationImage(
-              //         image: AssetImage('assets/images/temp3.jpg'),
-              //         fit: BoxFit.cover))
-              //     .make(),
-              HStack([
-                VxBox(
-                        child: VStack(
-                  [
-                    IButton(
-                      action: clicked,
-                      icon: FontAwesomeIcons.solidBuilding,
-                      id: 1,
-                      enabled: enable1,
+              storeController.navigation.value != 7
+                  ? HStack([
+                      VxBox(
+                              child: VStack(
+                        [
+                          IButton(
+                            action: page,
+                            icon: FontAwesomeIcons.solidBuilding,
+                            id: 1,
+                          ),
+                          IButton(
+                            action: page,
+                            icon: FontAwesomeIcons.brush,
+                            id: 2,
+                          ),
+                          IButton(
+                            action: () async {
+                              await storeController.updatepassword();
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return Alert(
+                                      type: 'information',
+                                      content:
+                                          'CHECK YOUR MAIL FOR PASSWORD CHANGE',
+                                    );
+                                  });
+                            },
+                            icon: FontAwesomeIcons.lock,
+                            id: 3,
+                          ),
+                          IButton(
+                            action: page,
+                            icon: FontAwesomeIcons.bookBookmark,
+                            id: 4,
+                          ),
+                          IButton(
+                            action: page,
+                            icon: FontAwesomeIcons.clockRotateLeft,
+                            id: 5,
+                          ),
+                          IButton(
+                            action: page,
+                            icon: FontAwesomeIcons.download,
+                            id: 6,
+                          ),
+                          IButton(
+                            action: page,
+                            icon: FontAwesomeIcons.language,
+                            id: 7,
+                          ),
+                          IButton(
+                            action: () =>
+                                initialspeech(), //Get.to(() => LogIn()
+                            icon: FontAwesomeIcons.user,
+                            id: 12,
+                          ),
+                          IButton(
+                            action: () => Get.to(() => LogIn()),
+                            icon: FontAwesomeIcons.arrowUpFromBracket,
+                            id: 9,
+                          )
+                        ],
+                        axisSize: MainAxisSize.max,
+                        alignment: MainAxisAlignment.spaceEvenly,
+                        crossAlignment: CrossAxisAlignment.center,
+                      ))
+                          .size(context.safePercentWidth * 4,
+                              context.screenHeight)
+                          .make()
+                          .material(elevation: 5.0, color: Colors.transparent),
+                      VxBox(
+                              child: Obx(() =>
+                                  render(storeController.navigation.value)))
+                          .size(context.safePercentWidth * 95,
+                              context.screenHeight)
+                          .make(),
+                    ])
+                  : SearchScreen(
+                      searchQuery: storeController.searchquerry.value,
                     ),
-                    IButton(
-                      action: clicked,
-                      icon: FontAwesomeIcons.brush,
-                      id: 2,
-                      enabled: enable2,
-                    ),
-                    IButton(
-                      action: clicked,
-                      icon: FontAwesomeIcons.lock,
-                      id: 3,
-                      enabled: enable3,
-                    ),
-                    IButton(
-                      action: clicked,
-                      icon: FontAwesomeIcons.bookBookmark,
-                      id: 4,
-                      enabled: enable4,
-                    ),
-                    IButton(
-                      action: clicked,
-                      icon: FontAwesomeIcons.clockRotateLeft,
-                      id: 5,
-                      enabled: enable5,
-                    ),
-                    IButton(
-                      action: clicked,
-                      icon: FontAwesomeIcons.download,
-                      id: 6,
-                      enabled: enable6,
-                    ),
-                    IButton(
-                      action: clicked,
-                      icon: FontAwesomeIcons.language,
-                      id: 7,
-                      enabled: enable7,
-                    ),
-                    IButton(
-                        action: () => Get.to(() => LogIn()),
-                        icon: FontAwesomeIcons.user,
-                        id: 12,
-                        enabled: true),
-                    IButton(
-                        action: () => Get.to(() => LogIn()),
-                        icon: FontAwesomeIcons.arrowUpFromBracket,
-                        id: 9,
-                        enabled: true)
-                  ],
-                  axisSize: MainAxisSize.max,
-                  alignment: MainAxisAlignment.spaceEvenly,
-                  crossAlignment: CrossAxisAlignment.center,
-                ))
-                    .size(context.safePercentWidth * 4, context.screenHeight)
-                    .make()
-                    .material(elevation: 5.0, color: Colors.transparent),
-                VxBox(child: render())
-                    .size(context.safePercentWidth * 95, context.screenHeight)
-                    .make(),
-              ]),
             ]),
           ).make().expand(),
         ]),

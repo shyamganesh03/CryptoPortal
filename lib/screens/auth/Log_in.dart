@@ -3,10 +3,14 @@ import 'package:browser/components/Button.dart';
 import 'package:browser/components/LabelText.dart';
 import 'package:browser/components/TextField.dart';
 import 'package:browser/screens/auth/signin.dart';
+import 'package:browser/screens/home/Mhome.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../../components/Alert.dart';
+import '../../data/datastores.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -18,6 +22,7 @@ class LogIn extends StatefulWidget {
 class _LogInState extends State<LogIn> {
   final t7 = TextEditingController();
   final t8 = TextEditingController();
+  final storeController = Get.put(DataStore());
 
   final buttonColors = WindowButtonColors(
       iconNormal: Colors.white,
@@ -111,7 +116,25 @@ class _LogInState extends State<LogIn> {
                           ),
                         ).box.size(415, 35).make(),
                         25.heightBox,
-                        Button(label: 'Submit', action: () {})
+                        Button(
+                            label: 'Submit',
+                            action: () async {
+                              try {
+                                await storeController.userLogin(
+                                    t7.text, t8.text);
+                                Get.to(() => MHome());
+                              } catch (e) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Alert(
+                                        type: 'error',
+                                        content:
+                                            'CHECK YOUR EMAIL AND PASSWORD',
+                                      );
+                                    });
+                              }
+                            })
                       ],
                       axisSize: MainAxisSize.max,
                       alignment: MainAxisAlignment.start,

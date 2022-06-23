@@ -41,8 +41,7 @@ class _BookmarkState extends State<Bookmark> {
           IButton(
               action: () {},
               icon: FontAwesomeIcons.filter,
-              id: 9,
-              enabled: false)
+              id: 9,)
         ],
         axisSize: MainAxisSize.max,
         alignment: MainAxisAlignment.center,

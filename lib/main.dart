@@ -8,6 +8,7 @@ import 'screens/home/Mhome.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {});
   FirebaseDart.setup();
   final storeController = Get.put(DataStore());
   storeController.initial();

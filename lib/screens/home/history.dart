@@ -41,8 +41,7 @@ class _HistoryState extends State<History> {
           IButton(
               action: () {},
               icon: FontAwesomeIcons.filter,
-              id: 9,
-              enabled: false)
+              id: 9,)
         ],
         axisSize: MainAxisSize.max,
         alignment: MainAxisAlignment.center,
