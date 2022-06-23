@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:tabbed_view/tabbed_view.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:webview_windows/webview_windows.dart';
 import '../../components/Button.dart';
@@ -23,7 +22,6 @@ class _SearchScreenState extends State<SearchScreen> {
   final webcontroller = WebviewController();
 
   final _textController = TextEditingController();
-  List<TabData> tabs = [];
   @override
   void initState() {
     super.initState();

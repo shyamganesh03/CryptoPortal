@@ -3,6 +3,7 @@ import 'package:browser/screens/auth/Log_in.dart';
 import 'package:get/get.dart';
 import '../../components/Alert.dart';
 import '../../data/datastores.dart';
+import '../auth/signin.dart';
 import '../web/web.dart';
 import './bookmark.dart';
 import './Language.dart';
@@ -12,7 +13,6 @@ import './home.dart';
 import './theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:python/python.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../components/Button.dart';
 
@@ -24,8 +24,6 @@ class MHome extends StatefulWidget {
 }
 
 class _MHomeState extends State<MHome> {
-  Python pythonScript = Python();
-
   final storeController = Get.put(DataStore());
   var a = false;
 
@@ -59,22 +57,6 @@ class _MHomeState extends State<MHome> {
     super.didChangeDependencies();
     print('dependencies change');
     // Get.lazyPut(() => StoreController();)
-  }
-
-  initialspeech() async {
-    while (true) {
-      print('started');
-      if (a == false) {
-        await pythonScript.addModules(storeController.modules);
-        a = true;
-        setState(() {});
-        print('script added');
-      }
-      await pythonScript
-          .execute('assets/speech.py')
-          .then((value) => print(value));
-      print('finished');
-    }
   }
 
   page(value) {
@@ -167,8 +149,7 @@ class _MHomeState extends State<MHome> {
                             id: 7,
                           ),
                           IButton(
-                            action: () =>
-                                initialspeech(), //Get.to(() => LogIn()
+                            action: () => Get.to(() => Signin()),
                             icon: FontAwesomeIcons.user,
                             id: 12,
                           ),

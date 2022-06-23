@@ -4,8 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
-  starflut
-  url_launcher_windows
   webview_windows
 )
 

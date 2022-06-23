@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:python/python.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:translator/translator.dart';
 import 'package:http/http.dart' as http;
@@ -37,15 +36,6 @@ class DataStore extends GetxController {
   final trdata = <Translation>[].obs;
   final navigation = 1.obs;
   final color = ''.obs;
-  List<Module> modules = [
-    Module("pip", "22.1.2"),
-    Module("ez-setup", "0.9"),
-    Module("setuptools", "62.3.2"),
-    Module("wheel", "0.37.1"),
-    Module("SpeechRecognition", "3.8.1"),
-    Module("PyAudio", "0.2.11"),
-    Module("pyttsx3", "2.90"),
-  ];
   final translator = GoogleTranslator();
 
   initial() {

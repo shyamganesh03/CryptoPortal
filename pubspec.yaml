@@ -39,22 +39,16 @@ dependencies:
   google_fonts: ^2.3.1
   group_radio_button: ^1.2.0
   syncfusion_flutter_sliders: ^19.4.55
-  tabbed_view: ^1.12.0
   http: ^0.13.4
   font_awesome_flutter: ^10.1.0
   expandable: ^5.0.1
   flutter_dropdown: ^1.0.0+hotfix.1
   dropdown_button2: ^1.2.3
-  animations: ^2.0.2
   bitsdojo_window: ^0.1.1+1
   flutter_material_color_picker: ^1.1.0+2
-  url_launcher: ^6.1.2
-  flutter_svg: ^1.0.3
   firebase_dart: ^1.0.9
   translator: ^0.1.7
   webview_windows: ^0.1.9
-  python: ^0.0.2
-  starflut: ^0.9.5
 
 
 dev_dependencies:
