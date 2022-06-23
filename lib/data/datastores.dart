@@ -7,17 +7,20 @@ import 'package:http/http.dart' as http;
 import '../../config/api_keys.dart';
 
 class UserDatas {
-  UserDatas(
-      {this.firstname,
-      this.lastname,
-      this.bookmark,
-      this.emailid,
-      this.history});
+  UserDatas({
+    this.firstname,
+    this.lastname,
+    this.bookmark,
+    this.emailid,
+    this.history,
+    this.download,
+  });
   final firstname;
   final lastname;
   final emailid;
   final history;
   final bookmark;
+  final download;
 }
 
 class Translation {
@@ -37,6 +40,7 @@ class DataStore extends GetxController {
   final navigation = 1.obs;
   final color = ''.obs;
   final translator = GoogleTranslator();
+  final login = false.obs;
 
   initial() {
     trdata.add(Translation(
@@ -170,6 +174,29 @@ class DataStore extends GetxController {
           'password': password,
           'history': [],
           'bookmark': [],
+          'downloads': [],
+        }));
+  }
+
+  updatehistory(url) async {
+    final history = [...firebasedata[0].history];
+    history.add(url);
+    await http.patch(
+        Uri.parse(
+            'https://cryptobrowser-4cf1b-default-rtdb.asia-southeast1.firebasedatabase.app/Users/${firebasedata[0].emailid}.json'),
+        body: json.encode({
+          'history': history,
+        }));
+  }
+
+  updatebookmark(url) async {
+    final bookmark = [...firebasedata[0].bookmark];
+    bookmark.add(url);
+    await http.patch(
+        Uri.parse(
+            'https://cryptobrowser-4cf1b-default-rtdb.asia-southeast1.firebasedatabase.app/Users/${firebasedata[0].emailid}.json'),
+        body: json.encode({
+          'bookmark': bookmark,
         }));
   }
 
@@ -196,12 +223,13 @@ class DataStore extends GetxController {
         .then((value) => postdata(fname, lname, mailId, p1));
   }
 
-  userLogin(email, password) {
-    return http.post(
+  userLogin(email, password) async {
+    await http.post(
         Uri.parse(
             'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${firebaseapi}'),
         body: json.encode(
             {"email": email, "password": password, "returnSecureToken": true}));
+    login(true);
   }
 
   updatepassword() {

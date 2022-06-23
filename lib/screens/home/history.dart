@@ -39,9 +39,10 @@ class _HistoryState extends State<History> {
             animated: true,
           ).box.size(500, 30).make(),
           IButton(
-              action: () {},
-              icon: FontAwesomeIcons.filter,
-              id: 9,)
+            action: () {},
+            icon: FontAwesomeIcons.filter,
+            id: 9,
+          )
         ],
         axisSize: MainAxisSize.max,
         alignment: MainAxisAlignment.center,
@@ -49,40 +50,36 @@ class _HistoryState extends State<History> {
       20.heightBox,
       Div(),
       20.heightBox,
-      VxBox(
-          child: ListView.builder(
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return VStack([
-                  VxBox(
-                      child: HStack(
-                    [
-                      10.widthBox,
-                      VxBox()
-                          .bgImage(DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80',
-                              )))
-                          .size(100, 80)
-                          .rounded
-                          .make(),
-                      100.widthBox,
-                      LabelText(
-                        type: 'Mt',
-                        value: 'WEBSITE NAME',
-                        color: storeController.fontcolor.value,
-                      ).centered(),
-                      150.widthBox,
-                      FaIcon(
-                        FontAwesomeIcons.shareNodes,
-                        color: Vx.blue400,
-                      )
-                    ],
-                  )).size(600, 100).make(),
-                  20.heightBox,
-                ]);
-              })).size(600, 550).make()
-    ].vStack(alignment: MainAxisAlignment.start, axisSize: MainAxisSize.max);
+      storeController.firebasedata == []
+          ? LabelText(
+                  type: 'Mt', value: 'NO HISTORY AVAILABLE', color: Vx.blue400)
+              .centered()
+          : VxBox(
+              child: ListView.builder(
+                  itemCount: storeController.firebasedata[0].history.length,
+                  itemBuilder: (context, index) {
+                    return VStack([
+                      VxBox(
+                          child: HStack(
+                        [
+                          LabelText(
+                            type: 'Mt',
+                            value:
+                                storeController.firebasedata[0].history[index],
+                            color: storeController.fontcolor.value,
+                          ).centered(),
+                          150.widthBox,
+                          FaIcon(
+                            FontAwesomeIcons.shareNodes,
+                            color: Vx.blue400,
+                          )
+                        ],
+                      )).size(600, 100).make(),
+                      20.heightBox,
+                    ]);
+                  })).size(600, 550).make()
+    ]
+        .vStack(alignment: MainAxisAlignment.start, axisSize: MainAxisSize.max)
+        .scrollVertical();
   }
 }

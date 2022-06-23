@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:webview_windows/webview_windows.dart';
 import '../../components/Button.dart';
+import '../../data/datastores.dart';
 
 class SearchScreen extends StatefulWidget {
   final String searchQuery;
@@ -20,7 +21,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   // late TabbedViewController _controller;
   final webcontroller = WebviewController();
-
+  final storeController = Get.put(DataStore());
   final _textController = TextEditingController();
   @override
   void initState() {
@@ -29,6 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Future<void> initPlatformState() async {
+    final serachurl = 'https://www.google.com/search?q=${widget.searchQuery}';
     try {
       await webcontroller.initialize();
       webcontroller.url.listen((url) {
@@ -36,10 +38,10 @@ class _SearchScreenState extends State<SearchScreen> {
       });
 
       await webcontroller.setBackgroundColor(Colors.transparent);
-      await webcontroller
-          .loadUrl('https://www.google.com/search?q=${widget.searchQuery}');
+      await webcontroller.loadUrl(serachurl);
       await webcontroller.setPopupWindowPolicy(WebviewPopupWindowPolicy.deny);
-
+      storeController.firebasedata[0].history.length > 0 &&
+          storeController.updatehistory(serachurl);
       if (!mounted) return;
       setState(() {});
     } on PlatformException catch (e) {

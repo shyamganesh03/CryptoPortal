@@ -114,16 +114,19 @@ class _MHomeState extends State<MHome> {
                           ),
                           IButton(
                             action: () async {
-                              await storeController.updatepassword();
-                              showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Alert(
-                                      type: 'information',
-                                      content:
-                                          'CHECK YOUR MAIL FOR PASSWORD CHANGE',
-                                    );
-                                  });
+                              if (storeController.firebasedata[0].emailid !=
+                                  null) {
+                                await storeController.updatepassword();
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Alert(
+                                        type: 'information',
+                                        content:
+                                            'CHECK YOUR MAIL FOR PASSWORD CHANGE',
+                                      );
+                                    });
+                              }
                             },
                             icon: FontAwesomeIcons.lock,
                             id: 3,
@@ -154,7 +157,10 @@ class _MHomeState extends State<MHome> {
                             id: 12,
                           ),
                           IButton(
-                            action: () => Get.to(() => LogIn()),
+                            action: () => {
+                              storeController.firebasedata.clear(),
+                              Get.to(() => LogIn()),
+                            },
                             icon: FontAwesomeIcons.arrowUpFromBracket,
                             id: 9,
                           )
