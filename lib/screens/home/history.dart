@@ -22,7 +22,6 @@ class _HistoryState extends State<History> {
   @override
   void initState() {
     super.initState();
-    print(storeController.firebasedata.length);
   }
 
   @override

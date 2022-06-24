@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
-
 import '../../components/Alert.dart';
 import '../../data/datastores.dart';
 

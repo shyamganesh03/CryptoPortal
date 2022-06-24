@@ -52,11 +52,15 @@ class _MHomeState extends State<MHome> {
     // initialspeech();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    print('dependencies change');
-    // Get.lazyPut(() => StoreController();)
+  notallowed(context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Alert(
+            type: 'error',
+            content: 'THE SITE IS BLOCKED',
+          );
+        });
   }
 
   page(value) {

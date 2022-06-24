@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:webview_windows/webview_windows.dart';
 import '../../components/Button.dart';
+import '../../components/LabelText.dart';
 import '../../data/datastores.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -101,7 +102,13 @@ class _SearchScreenState extends State<SearchScreen> {
       },
       child: ZStack([
         Container(
-          child: webwidget(),
+          child: widget.searchQuery.toLowerCase().contains('games') ? VxBox(
+            child: LabelText(
+                          type: 'Mt',
+                          value: 'NOT ALLOWED WEBSITE IS RESTRICTED',
+                          color: Vx.white,
+                        ).centered(),
+          ).make(): webwidget(),
         ),
         VxBox(
           child: IButton(

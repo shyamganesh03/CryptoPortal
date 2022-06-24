@@ -70,7 +70,7 @@ class _ThemesState extends State<Themes> {
         onColorChange: (color) =>
             setState(() => {tempColor = color, type = typename}),
         onMainColorChange: (color) {},
-        onBack: () => print("Back button pressed"),
+        onBack: (){},
       ),
     );
   }

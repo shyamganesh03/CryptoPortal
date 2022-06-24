@@ -22,7 +22,6 @@ class _DownloadState extends State<Download> {
   @override
   void initState() {
     super.initState();
-    print(storeController.firebasedata.length);
   }
 
   @override
