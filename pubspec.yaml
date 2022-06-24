@@ -66,9 +66,9 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 msix_config:
-  display_name: Cryoto portal
+  display_name: Crypto portal
   publisher_display_name: Batch 5
-  identity_name: crypto_portal.app
+  identity_name: crypto-portal03.app
   msix_version: 1.0.0.0
   languages: en-us,
   capabilities: "translation, websiterestriction"
